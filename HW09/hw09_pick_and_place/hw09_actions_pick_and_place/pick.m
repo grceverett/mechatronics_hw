@@ -29,6 +29,8 @@ function grip_result = pick(strategy,objectData,optns)
         mat_R_T_M = mat_R_T_M{1};
     end
 
+    grip_result = 1;
+
     %% 1) Determine z offset and grip distance required
     %   z offset includes offset for both the base and the gripper
         if strcmp(string(label), "pouch")

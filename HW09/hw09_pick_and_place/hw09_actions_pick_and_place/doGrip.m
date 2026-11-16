@@ -24,11 +24,19 @@ function [res,state] = doGrip(type,optns,doGripValue )
 
     % Modify it if place (i.e. open)
     if strcmp(type,'place')
-        gripPos = 0;           
+        gripPos = 0;
     end
 
     %% TODO: Pack gripper information intro ROS message
-    % Complete code here. 
+    % Complete code here.
+    grip_goal = packGripGoal_struct(gripPos, grip_msg, optns);
+
+    % grip_goal.Trajectory.JointNames = {'robotiq_85_left_knuckle_joint'};
+    % point = r.point;
+    % point.Positions = gripPos;
+    % point.TimeFromStart = rosduration(1, 'DataFormat', 'struct');
+    % grip_goal.Trajectory.Points = point;
+
 
     %% Pending: Check if fingers already at goal
     % Get current finger position

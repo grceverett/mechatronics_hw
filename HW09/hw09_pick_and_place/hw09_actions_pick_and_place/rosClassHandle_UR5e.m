@@ -1,6 +1,7 @@
 classdef rosClassHandle_UR5e
     
     properties      
+        debug;
 
         % Subscribers
         joint_state_sub;
@@ -43,6 +44,8 @@ classdef rosClassHandle_UR5e
 
     methods 
         function r = rosClassHandle_UR5e
+            r.debug                     = 0;
+
             r.joint_state_sub         = rossubscriber("/joint_states");
 
             %ds                      = rossubscriber("/camera/depth/points",'DataFormat','struct');
@@ -85,7 +88,7 @@ classdef rosClassHandle_UR5e
             r.pt_cloud_sub            = rossubscriber('/camera/depth/points','DataFormat','struct');
             
             % Yolo Neural Network
-            r.general_detector        = load("./vision_tutorials/detectors/detector_gral_sim.mat");   
+            r.general_detector        = load("./Homeworks/mechatronics_hw/HW09/hw09_pick_and_place/hw09_actions_pick_and_place/vision_tutorials/detectors/detector_gral_sim.mat");   
         end
 
     end

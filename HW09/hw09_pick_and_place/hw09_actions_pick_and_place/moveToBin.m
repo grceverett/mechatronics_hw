@@ -18,6 +18,9 @@ function grip_result = moveToBin(strategy,mat_current,mat_bin,optns)
     %% 1. Vars / Dictionary of options
     % z_offset = optns("z_offset");
     % z_offset = z_offset{1};
+
+    grip_result = 1;
+    traj_result = 1;
     
     %% 2. Move to desired location
     if strcmp(strategy,'topdown') % Lift and then go to bin       

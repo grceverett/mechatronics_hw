@@ -30,7 +30,7 @@ function [res,q] = moveToQ(config,optns,custom)
     % Set to qr
     if nargin == 0 || strcmp(config,'qr')
         % Ready config
-        q = [0 0 pi/2 -pi/2 0 0];
+        q = [0 0 pi -pi/2 0 0];
     
     % Set to qz
     elseif(strcmp(config,'qz'))
