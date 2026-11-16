@@ -100,7 +100,7 @@ if strcmp(type,'gazebo')
         if ~ret     % If no errors
 
             % Move to ready position
-            ret = moveToQ('qr');
+            ret = moveToQ('qr', optns);
         end
 
         % Control loop
