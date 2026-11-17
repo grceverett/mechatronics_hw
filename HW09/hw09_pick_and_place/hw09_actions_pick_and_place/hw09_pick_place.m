@@ -4,11 +4,11 @@
 clc
 clear
 rosshutdown;
-pause(2);       
+pause(0.5);       
 
 %% Set IP address for master and node:
 masterHostIP = '10.51.53.249' %complete code
-nodeHostIP = '10.51.64.86'%complete code
+nodeHostIP = '10.51.52.153' %complete code
 rosinit(masterHostIP, 11311, "NodeHost",nodeHostIP);
 
 %% ROS Class handle
@@ -20,8 +20,8 @@ r = rosClassHandle_UR5e;
 %% Options 
 
 % Create global dictionary. Passed to all functions. Includes robot handle
-keys   = ["debug", "toolFlag", "traj_steps", "z_offset", "traj_duration", "frameAdjustmentFlag", "toolAdjustmentFlag", "toolAdjustment", "rHandle"];
-values = {      0,          0,            1,       0.09,               2,                     1,                    1,            0.165,         r};
+keys   = ["debug", "toolFlag", "traj_steps", "z_offset", "traj_duration", "frameAdjustmentFlag", "toolAdjustmentFlag", "toolAdjustment", "rHandle", "label"];
+values = {      0,          0,            1,       0.09,               2,                     1,                    1,            0.165,         r,   "can"};
 
 % Instantiate the dictionary: values can be access via {}, i.e. optns{'key'}
 disp("Creating dictionary...");
@@ -38,7 +38,8 @@ goHome('qr', optns);
 %% 03 Reset the simulation
 
 disp('Resetting the world...');
-resetWorld(optns);      % reset models through a gazebo service
+% resetWorld(optns);      % reset models through a gazebo service
+pause(3.5); 
 
 %% 04 Get Model Poses
 
@@ -49,7 +50,7 @@ disp('Getting object goal pose(s)...')
 models = getModels(optns);
 
 % Number of models to pick (you can hard code or randomize)
-n = 1; % n = randi([3 25]);
+n = 20; % n = randi([3 25]);
 
 % Bin locations
 greenBin = [-0.4, -0.45, 0.25, -pi/2, -pi 0];
@@ -63,6 +64,7 @@ greenBin = [-0.4, -0.45, 0.25, -pi/2, -pi 0];
 
 % Set the rate at which this loop should run
 rate = rosrate(10);
+objects = [24 25 27 28 30 31 33 36 37 38 41 43 44 45 46 47]
 
 % For Gazebo retrieved poses
 if strcmp(type,'gazebo')
@@ -73,7 +75,7 @@ if strcmp(type,'gazebo')
         %% 05.1 Get Model Pose
         
         % 05.1.1 Get Model Name (23 is the starting index for graspable objects).
-        model_name = models.ModelNames{23+i};
+        model_name = models.ModelNames{objects(i)};
 
         % 05.1.2 Get Model pose
         fprintf('Picking up model: %s \n',model_name);
@@ -82,6 +84,9 @@ if strcmp(type,'gazebo')
        
         % 05.2 Pick Model
         strategy = 'topdown';               % Assign strategy: topdown, direct
+        if (i >= 12)
+            optns{"label"} = "bottle";
+        end
         ret = pick(strategy, mat_R_T_M,optns); % Can have optional starting opse for ctraj like: ret = pick(strategy, mat_R_T_M,mat_R_T_G);
         
         % 05.3 Place
@@ -104,6 +109,7 @@ if strcmp(type,'gazebo')
         end
 
         % Control loop
+        % goHome('qr',optns);
         waitfor(rate);
     end
 

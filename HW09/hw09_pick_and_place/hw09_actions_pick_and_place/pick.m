@@ -20,6 +20,7 @@ function grip_result = pick(strategy,objectData,optns)
     if isequal(size(objectData), [4, 4]) && isnumeric(objectData)
         mat_R_T_M = objectData;
         label = "can";
+    label = string(optns("label"));
     
     % Extract pose and label from object
     else
@@ -37,18 +38,28 @@ function grip_result = pick(strategy,objectData,optns)
             zOffset = 0.145;
             doGripValue = 0.62;
         elseif strcmp(string(label), "can")
-            zOffset = 0.1;
-            doGripValue = 0.24;
+            zOffset = 0.08;
+            doGripValue = 0.23;
         elseif strcmp(string(label), "bottle")
-            zOffset = 0.12;
-            doGripValue = 0.36;
+            mat_R_T_M = mat_R_T_M*rotm2tform(rotz(45,'deg'));
+            zOffset = 0.15;
+            doGripValue = 0.52;
         end
+        prepOffset = zOffset+0.1;
 
     %% 2) Move to desired location
         % Account for base offset + Hover over object
         if strcmp(strategy,'topdown')
+            prep_R_T_M = lift(mat_R_T_M,prepOffset);
             over_R_T_M = lift(mat_R_T_M,zOffset);
+            MovePrepOb = moveTo(prep_R_T_M, optns);
+            if over_R_T_M(3,4) < 0.12 && strcmp(string(label), "can")
+                over_R_T_M = lift(over_R_T_M,-0.025);
+                doGripValue = 0.22;
+            end
+            
             MoveToOb = moveTo(over_R_T_M, optns);
+            
             disp(over_R_T_M);
         
         elseif strcmpi(strategy,'direct')
